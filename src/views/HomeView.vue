@@ -363,9 +363,9 @@ export default {
       });
       document.addEventListener("mousemove", () => (drag = true));
 
-      document.addEventListener("mouseup", () => {
+      document.addEventListener("mouseup", (e) => {
         if (drag === false) {
-          this.selectedPiece = onClick();
+          this.selectedPiece = onClick(e);
           this.select();
         }
       });
