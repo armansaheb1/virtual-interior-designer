@@ -23,16 +23,32 @@
       <button
         v-if="!rotate"
         @click="rotate = true"
-        style="float: left; margin: 10px"
+        style="
+          float: left;
+          margin: 10px;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          border: none;
+          outline: none;
+        "
       >
-        <ion-icon name="sync-outline"></ion-icon>
+        <ion-icon style="font-size: 20px" name="sync-outline"></ion-icon>
       </button>
       <button
         v-if="rotate"
         @click="rotate = false"
-        style="float: left; margin: 10px"
+        style="
+          float: left;
+          margin: 10px;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          border: none;
+          outline: none;
+        "
       >
-        <ion-icon name="move-outline"></ion-icon>
+        <ion-icon style="font-size: 20px" name="move-outline"></ion-icon>
       </button>
 
       <div
@@ -346,12 +362,13 @@ export default {
       function onClick(e) {
         raycaster.setFromCamera(mouse, camera);
         let intersects = raycaster.intersectObjects(scene.children);
-        if (intersects.length > 0) {
-          var selectedPiece = intersects[1];
-          return selectedPiece;
+        if (e.target.tagName === "BUTTON" || e.target.tagName === "ION-ICON") {
+          return "nc";
         } else {
-          console.log(e.target);
-          if (e.currentTarget.tagName !== "button") {
+          if (intersects.length > 0) {
+            var selectedPiece = intersects[1];
+            return selectedPiece;
+          } else {
             var selectedPiece = false;
             return false;
           }
@@ -456,6 +473,9 @@ export default {
       this.selectedPiece = this.group;
     },
     select() {
+      if (this.selectedPiece === "nc") {
+        return;
+      }
       if (!this.selectedPiece) {
         this.scene.remove(this.transform);
         return;
