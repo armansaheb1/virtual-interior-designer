@@ -1,7 +1,7 @@
 <template>
   <div id="elem" style="background: black">
     <div
-      v-if="homepicture"
+      v-if="!homepicture || homepicture === ' /Untitled-design-35.jpg'"
       style="
         position: absolute;
         width: 100%;
@@ -12,13 +12,14 @@
         z-index: 1000;
       "
     >
+      <button @click="homepicture = '/Untitled-design-35.jpg'">Close</button>
       <h4 style="margin-top: 10%">Please Select a Picture</h4>
       <br />
       <input id="file" @input="sendpic" type="file" />
     </div>
     <div
       class="homepic"
-      :style="`position:absolute ;height: 100% ; background: url(/Untitled-design-35.jpg); background-size: 100% 100%; right: 15%;left:15%; top : 0`"
+      :style="`position:absolute ;height: 100% ; background: url(${homepicture}); background-size: 100% 100%; right: 15%;left:15%; top : 0`"
     >
       <button
         v-if="!rotate"
@@ -155,6 +156,7 @@ export default {
   },
   data: () => ({
     item: "",
+    loaderitems: "",
     itemparts: [],
     rotate: false,
     mod: "",
@@ -162,7 +164,7 @@ export default {
     patl: false,
     scene: "",
     selectedPiece: "",
-    homepicture: "",
+    homepicture: "/Untitled-design-35.jpg",
     lights: [],
     final: [],
     bumped: 0,
@@ -431,36 +433,34 @@ export default {
       this.getitem(counter.id);
     },
     loaderitem(element, i = 0) {
-      var item = element[i];
+      this.loaderitems = element[i];
       let objLoader = new FBXLoader();
-      objLoader.load(item.model, (object) => {
+      objLoader.load(this.loaderitems.model, (object) => {
         object.position.y = -500;
         this.obj.push(object);
-        if (item.default.code) {
-          const material = new THREE.MeshPhongMaterial({
-            color: Number(item.default.code),
-            shininess: item.default.shininess,
-          });
-          object.material = material;
-        } else {
-          var pic = item.default.pic;
-          new THREE.TextureLoader().load(pic, (texture) => {
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(item.default.repeat, item.default.repeat);
-            var material = new THREE.MeshPhongMaterial({
-              map: texture,
-              shininess: item.default.shininess,
-            });
-            object.material = material;
-          });
-        }
+        object.material = material;
         this.group.add(object);
         i++;
+        this.loadermap(element, i, object);
         if (i < element.length) {
           this.loaderitem(element, i);
         }
       });
+    },
+    loadermap(element, i = 0, object) {
+      this.loaderitems = element[i];
+      var material = new THREE.MeshPhongMaterial();
+      if (!this.loaderitems.default.code) {
+        var pic = this.loaderitems.default.pic;
+        alert(pic)
+        var texture = new THREE.TextureLoader().load(pic);
+        material.map = texture;
+        material.shininess = this.loaderitems.default.shininess;
+      } else {
+        material.color = this.loaderitems.default.code;
+        material.shininess = item.default.shininess;
+      }
+      object.material = material;
     },
     additem() {
       this.group = new THREE.Group();
@@ -493,7 +493,6 @@ export default {
       this.selectedPiece = this.groups[this.counter];
       this.transform.attach(this.groups[this.counter]);
       this.scene.add(this.transform);
-      console.log(this.groups[this.counter]);
     },
     selectbar(idx) {
       this.selectedPiece = this.groups[idx];
@@ -524,7 +523,6 @@ export default {
           }
           itemm.material = material;
         }
-        console.log(this.obj[counter].children[0].material);
       });
     },
   },
