@@ -6,7 +6,7 @@
         position: absolute;
         width: 100%;
         height: 100%;
-        background: #223;
+        background: white;
         top: 0;
         left: 0;
         z-index: 1000;
@@ -19,38 +19,95 @@
     </div>
     <div
       class="homepic"
-      :style="`position:absolute ;height: 100% ; background: url(${homepicture}); background-size: 100% 100%; right: 15%;left:15%; top : 0`"
+      :style="`position:absolute ;width: 100% ;height: 100%; background: url(${homepicture}); background-size: 100% 100%; right: 0%;left:0%; top : 0`"
     >
-      <button
-        v-if="!rotate"
-        @click="rotate = true"
-        style="
-          float: left;
-          margin: 10px;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          border: none;
-          outline: none;
-        "
-      >
-        <ion-icon style="font-size: 20px" name="sync-outline"></ion-icon>
+    <button
+          v-if="!menus"
+          @click="menus = true"
+          style="
+            float: left;
+            cursor: pointer;
+            margin: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            outline: none;
+          "
+        >
+        <ion-icon style="font-size: 20px" name="expand-outline"></ion-icon>
       </button>
-      <button
-        v-if="rotate"
-        @click="rotate = false"
-        style="
-          float: left;
-          margin: 10px;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          border: none;
-          outline: none;
-        "
-      >
-        <ion-icon style="font-size: 20px" name="move-outline"></ion-icon>
-      </button>
+      <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px; width: 15%; left: 40%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}`">
+        <button
+          v-if="!rotate"
+          @click="rotate = true"
+          style="
+            float: left;
+            cursor: pointer;
+            margin: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            outline: none;
+            
+          "
+        >
+          <ion-icon style="font-size: 20px" name="sync-outline"></ion-icon>
+        </button>
+        <button
+          v-if="rotate"
+          @click="rotate = false"
+          style="
+            float: left;
+            cursor: pointer;
+            margin: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            outline: none;
+          "
+        >
+          <ion-icon style="font-size: 20px" name="move-outline"></ion-icon>
+        </button>
+        <button
+          @click="menus = false"
+          style="
+            float: left;
+            cursor: pointer;
+            margin: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            outline: none;
+          "
+        >
+        <ion-icon style="font-size: 20px" name="expand-outline"></ion-icon>
+        </button>
+        <button
+          @click="menus = false"
+          style="
+            float: left;
+            cursor: pointer;
+            margin: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            outline: none;
+          "
+        >
+        <ion-icon  style="font-size: 20px" name="camera-outline"></ion-icon>
+        </button>
+        <button v-if="topstop == '0px'" @click="topstop = '-45px'" style="position: absolute; bottom: -10px;left: 48%; border: none; background-color: white;border-radius: 10px;">
+          <i style="cursor: pointer" class="fa-solid fa-chevron-up"></i>
+        </button>
+        <button v-if="topstop == '-45px'" @click="topstop = '0px'" style="position: absolute; bottom: -10px;left: 48%; border: none; background-color: white;border-radius: 10px;">
+          <i style="cursor: pointer" class="fa-solid fa-chevron-down"></i>
+        </button>
+      </div>
 
       <div
         id="container"
@@ -58,78 +115,140 @@
       ></div>
     </div>
     <div
-      style="
+      v-if="groups.length && menus"
+      :style="`
         position: absolute;
-        width: 15%;
-        background: #223;
+        width: 7.5%;
+        background: white;
         height: 100%;
         background-size: 100% 100%;
-        right: 0;
+        right: -${rightsleft}%;
         top: 0;
         color: white;
+        text-align: center
+        `
       "
-    >
-      <div>
-        <h3>Used Objects</h3>
-        <hr />
-        <div>
-          <div
-            v-for="(item, idx) in groups"
-            v-bind:key="item"
-            @click="selectbar(idx)"
-            style="cursor: pointer"
-          >
-            <h4>
-              {{ item["name"] }}
-            </h4>
-            <hr />
-          </div>
-        </div>
-      </div>
+      class="menus"
+      >
+      <div
+        v-for="(item, idx) in groups"
+        v-bind:key="item"
+        @click="selectbar(idx)"
+      >
+      <img :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid #ececec 2px; cursor: pointer" alt="">
+      <button class="btn btn-danger" @click="deleteitem(idx)" style="position: relative; top: -25px ; left: -5px"><i class="fa-solid fa-trash"></i></button>
+      <button class="btn btn-primary" @click="resetitem(idx)" style="position: relative; top: -25px ; left: 5px"><i class="fa-solid fa-rotate"></i></button>
+    </div>
+      <button v-if="rightsleft == 7" @click="rightsleft = 0" style="position: absolute; top: 48%;left: -10px; border: none; background-color: white;border-radius: 5px; padding: 5px">
+        <i style="cursor: pointer" class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button v-if="rightsleft == 0" @click="rightsleft = 7" style="position: absolute; top: 48%;left: -10px; border: none; background-color: white;border-radius: 5px; padding: 5px">
+        <i style="cursor: pointer" class="fa-solid fa-chevron-right"></i>
+      </button>
     </div>
     <div
-      class="objects"
+      v-if="menus"
+      class="objects menus"
       style="
         position: absolute;
-        width: 15%;
-        background: #223;
+        width: 5%;
+        background: white;
         height: 100%;
         background-size: 100% 100%;
         left: 0;
         top: 0;
         color: white;
       "
-    >
+      >
       <div>
-        <h3>Objects</h3>
-        <hr style="margin: 0" />
-        <div class="subobject">
+        <h3 class="object">
+          <i class="fa-solid fa-couch"></i>
+          <p class="pc">Objects</p>
+        </h3>
+       
+        <div
+          class="subobject"
+          style="
+            position: absolute;
+            width: 150%;
+            background: white;
+            height: 100%;
+            background-size: 100% 100%;
+            left: 100%;
+            top: 0;
+            color: white;
+            background: #ececec ;
+          "
+          >
           <div
-            v-for="item in items"
+            v-for="(item, idx) in cat"
+            @mouseover="setsub(idx)"
             v-bind:key="item"
             @click="loaditem(item)"
-            style="cursor: pointer; background: #335 ; back"
+            style="cursor: pointer; background: #ececec ; back"
           >
-            <h4 style="margin: 0; padding: 15px">
-              {{ item.name }}
-            </h4>
-            <hr style="margin: 0" />
+            <h3>
+              <i :class="`${item.icon}`"></i>
+              <p class="pc">{{ item.name }}</p>
+            </h3>
+           
           </div>
+          <div
+          class="subsubobject"
+          style="
+            position: absolute;
+            width: 100%;
+            background: white;
+            height: 100%;
+            background-size: 100% 100%;
+            left: 100%;
+            top: 0;
+            color: white;
+            background: #ffffff ;
+          "
+          >
+          <div
+            v-for="item in subs"
+            v-bind:key="item"
+            @click="loaditem(item)"
+            style="cursor: pointer; background: #ffffff ; back"
+          >
+            <img :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid #ececec 2px" alt="">
+           
+          </div>
+        </div>
         </div>
       </div>
       <div class="lights">
-        <h3>Lights</h3>
-        <hr style="margin: 0" />
+        <h3>
+          <i class="fa-solid fa-lightbulb"></i>
+          <p class="pc">Lights</p>
+        </h3>
+       
         <div
           class="sublights"
           @click="lightadd()"
-          style="cursor: pointer; background: #335 ; back"
-        >
-          <h4 style="margin: 0; padding: 15px">Light</h4>
-          <hr />
-        </div>
+          style="
+            position: absolute;
+            width: 150%;
+            background: #ececec ;
+            height: 100%;
+            background-size: 100% 100%;
+            left: 100%;
+            top: 0;
+            color: #ececec;
+            z-index: 1000000000000;
+            cursor: pointer;
+          "
+          >
+          <h3>
+          <i class="fa-solid fa-lightbulb"></i>
+          <p class="pc">Directional</p>
+        </h3>
+      </div>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -164,8 +283,10 @@ export default {
     patl: false,
     scene: "",
     selectedPiece: "",
+    rightsleft: 0,
     homepicture: "/Untitled-design-35.jpg",
     lights: [],
+    topstop: '0px',
     final: [],
     bumped: 0,
     bump: false,
@@ -185,8 +306,11 @@ export default {
     controls2: "",
     orbit: "",
     items: [],
+    subs: false,
     groups: [],
     group: [],
+    menus: true,
+    cat: [],
     model: {
       name: "aa",
       amount: 5,
@@ -197,6 +321,7 @@ export default {
   mounted() {
     this.hi();
     this.getitems();
+    this.getcat();
   },
   watch: {
     pat: {
@@ -210,6 +335,19 @@ export default {
     this.checkrotate();
   },
   methods: {
+    resetitem(id) {
+      this.groups[id].rotation.set(0, 0, 0)
+      this.groups[id].position.set(0, 0, 0)
+    },
+    deleteitem(id) {
+      this.scene.remove(this.transform);
+      this.scene.remove(this.groups[id]);
+      this.groups.splice(id, 1);
+    },
+    setsub(id) {
+      console.log(this.cat[id].items)
+      this.subs = this.cat[id].items
+    },
     checkrotate() {
       if (this.rotate) {
         this.transform.setMode("rotate");
@@ -223,6 +361,12 @@ export default {
       formdata.append("image", img, img.name);
       await axios.post(`/image`, formdata).then((response) => {
         this.homepicture = response.data;
+      });
+    },
+    async getcat(id) {
+      await axios.get(`/category`).then((response) => {
+        this.cat = response.data;
+        console.log(response.data);
       });
     },
     async getitem(id) {
@@ -301,7 +445,7 @@ export default {
         antialias: true,
         SSAO: true,
       });
-      renderer.setSize(window.innerWidth * 0.7, window.innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
       document.querySelector("#container").appendChild(renderer.domElement);
 
       this.transform = new TransformControls(camera, renderer.domElement);
@@ -405,7 +549,7 @@ export default {
       window.addEventListener("resize", onWindowResize, false);
       function onWindowResize() {
         camera.aspect = window.innerWidth / 650;
-        renderer.setSize(window.innerWidth * 0.7, window.innerHeight);
+        renderer.setSize(window.innerWidth, window.innerHeight);
         render();
       }
 
@@ -483,6 +627,7 @@ export default {
       this.group = new THREE.Group();
       this.loaderitem(this.model[this.item.id].parts);
       this.group["name"] = this.model[this.item.id].item.name;
+      this.group["get_pic"] = this.model[this.item.id].item.get_pic;
       this.groups.push(this.group);
       this.scene.add(this.group);
       this.transform.attach(this.group);
@@ -547,6 +692,11 @@ export default {
 };
 </script>
 <style>
+.pc {
+  font-family: "UD" !important;
+  font-size: 12px !important;
+  margin-top: 5px;
+}
 body {
   overflow: hidden;
 }
@@ -616,6 +766,13 @@ hr {
   border-color: grey;
 }
 
+.subsubobject {
+  display: none;
+}
+.objects{
+  opacity: 100%;
+}
+
 .subobject {
   display: none;
 }
@@ -623,12 +780,34 @@ hr {
 .sublights {
   display: none;
 }
+.objects:hover{
+  opacity: 100%;
+}
 
 .objects:hover .subobject {
   display: block;
 }
 
+.subobject:hover .subsubobject {
+  display: block;
+}
+
 .lights:hover .sublights {
   display: block;
+}
+
+.btn{
+  font-size: 10px;
+  border: none;
+  padding: 5px;
+  border-radius: 35%;
+  color: white;
+  cursor: pointer
+}
+.btn-danger{
+  background: red
+}
+.btn-primary{
+  background: blue
 }
 </style>

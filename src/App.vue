@@ -1,8 +1,29 @@
 <template>
-  <router-view/>
+  <router-view />
 </template>
 
 <style lang="scss">
+@font-face {
+  font-family: "UB";
+  src: url("./../public/URWDIN-Black.woff") format("woff");
+}
+@font-face {
+  font-family: "UX";
+  src: url("./../public/URWDIN-XLight.woff") format("woff");
+}
+@font-face {
+  font-family: "UR";
+  src: url("./../public/URWDIN-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "UM";
+  src: url("./../public/URWDIN-Medium.woff") format("woff");
+}
+@font-face {
+  font-family: "UD";
+  src: url("./../public/URWDIN-Demi.woff") format("woff");
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
