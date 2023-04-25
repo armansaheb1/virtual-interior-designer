@@ -339,7 +339,7 @@
             <div v-for="(item, idx) in selectedPiece.children" style="height: auto;" v-bind:key="item">
               <div style="width: 90%; margin: auto">
                 <a>{{item.name}}</a><br>
-                <select v-model="color[idx]" @change="changecolor(idx)" style="border-color: grey; border-radius: 5px; padding: 2px; font-family:'UR'; width: 100%">
+                <select v-if="spd[idx]" v-model="color[idx]" @change="changecolor(idx)" style="border-color: grey; border-radius: 5px; padding: 2px; font-family:'UR'; width: 100%">
                   <option disabled selected>
                     Select Material
                   </option>
