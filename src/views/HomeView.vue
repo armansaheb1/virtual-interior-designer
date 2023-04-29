@@ -1,6 +1,21 @@
 <template>
   <div id="elem" @mousemove="myFunction()" style="background: black; width: 100%; height: 100%; overflow: hidden ; position: absolute">
-
+    <div
+      v-if="!homepicture"
+      style="
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: white;
+        top: 0;
+        left: 0;
+        z-index: 100000000000000000000000000000000000000000000000000000;
+      "
+    >
+      <h4 style="margin-top: 10%">Please Select a Picture</h4>
+      <br />
+      <input id="file" @input="sendpic()" type="file" />
+    </div>
     <div
       v-if="false"
       style="
@@ -44,9 +59,24 @@
             z-index:1000000000000000000000000000000000000000000000
           "
         >
-        <ion-icon style="font-size: 20px" name="expand-outline"></ion-icon>
+        <img style="width: 90%; margin: 2.5%" src="/full-screen.png">
       </button>
-      <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px; width: 210px; left: 40%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 1000000000`">
+      <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px; width: 315px; left: 37%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 1000000000`">
+        <button
+          @click="rotate = true"
+          style="
+            float: left;
+            cursor: pointer;
+            margin: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            outline: none;
+          "
+        >
+        <img @click="homepicture = false" style="width: 90%; margin-top: -3px" src="/new image.png">
+        </button>
         <button
           v-if="!rotate"
           @click="rotate = true"
@@ -61,7 +91,7 @@
             outline: none;
           "
         >
-          <ion-icon style="font-size: 20px" name="sync-outline"></ion-icon>
+        <img style="width: 90%; margin-top: -3px" src="/rotate.png">
         </button>
         <button
           v-if="rotate"
@@ -77,7 +107,7 @@
             outline: none;
           "
         >
-          <ion-icon style="font-size: 20px" name="move-outline"></ion-icon>
+        <img style="width: 90%; margin-top: -3px" src="/move.png">
         </button>
         <button
           @click="menus = !menus"
@@ -92,10 +122,10 @@
             outline: none;
           "
         >
-        <ion-icon style="font-size: 20px" name="expand-outline"></ion-icon>
+        <img style="width: 90%; margin-top: -3px" src="/full-screen.png">
         </button>
         <button
-          
+          @click="capture()"
           style="
             float: right;
             cursor: pointer;
@@ -107,7 +137,7 @@
             outline: none;
           "
         >
-        <ion-icon @click="capture()" style="font-size: 20px" name="camera-outline"></ion-icon>
+        <img style="width: 93%; margin-top: -3px" src="/export.png">
         </button>
         <button
         @click="deselect()"
@@ -122,7 +152,22 @@
             outline: none;
           "
         >
-        <ion-icon  style="font-size: 20px" name="square-outline"></ion-icon>
+        <img style="width: 90%; margin-top: -3px" src="/select-none.png">
+        </button>
+        <button
+        @click="deleteall()"
+          style="
+            float: right;
+            cursor: pointer;
+            margin: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            outline: none;
+          "
+        >
+        <img style="width: 92%; margin-top: -3px" src="/delete-all.png">
         </button>
         <button v-if="topstop == '0px'" @click="topstop = '-45px'" style="position: absolute; bottom: -10px;left: 45%; border: none; background-color: white;border-radius: 10px;">
           <i style="cursor: pointer" class="fa-solid fa-chevron-up"></i>
@@ -171,51 +216,32 @@
             Dimension
           </div>
 
-        <label for="customRange2">X</label>
-        <div class="input-group mb-3">
-          <span @click="axisx = axisx - 1; selectedPiece.position.setX(axisx * 30)" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">-</button></span>
-          <input type="tel" @input="selectedPiece.position.setX(axisx * 30)" v-model="axisx" style="text-align: center; padding-right: 0; padding-left: 0" class="form-control" >
-          <span @click="axisx = axisx + 1; selectedPiece.position.setX(axisx * 30)" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">+</button></span>
-        </div>
+        <label for="customRange2">X</label><br>
+          <input type="range" style="width: 90%" min="-450" max="100" class="custom-range" @input="selectedPiece.position.setX(axisx * 30)" v-model="axisx"  >
 
-        <label for="customRange2">Y</label>
-        <div class="input-group mb-3">
-          <span @click="axisy = axisy - 1; selectedPiece.position.setY(axisy * 30)" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">-</button></span>
-          <input type="tel" v-model="axisy" style="text-align: center; padding-right: 0; padding-left: 0" class="form-control" >
-          <span @click="axisy = axisy + 1; selectedPiece.position.setY(axisy * 30)" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">+</button></span>
-        </div>
+        <br><label for="customRange2">Y</label><br>
+          <input type="range" style="width: 90%" min="-50" max="130" class="custom-range" @input="selectedPiece.position.setY(axisy * 30)" v-model="axisy"  >
 
-        <label for="customRange2">Z</label>
-        <div class="input-group mb-3">
-          <span @click="axisz = axisz - 1; selectedPiece.position.setZ(axisz * 30)" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">-</button></span>
-          <input type="tel" v-model="axisz" style="text-align: center; padding-right: 0; padding-left: 0" class="form-control" >
-          <span @click="axisz = axisz + 1; selectedPiece.position.setZ(axisz * 30)" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">+</button></span>
-        </div>
+        <br><label for="customRange2">Z</label><br>
+          <input type="range" style="width: 90%" min="-450" max="100" class="custom-range" @input="selectedPiece.position.setZ(axisz * 30)" v-model="axisz"  >
+          <br>
+          <button class="btn btn-primary" @click="resetdimitem(selectedPiece)" ><i class="fa-solid fa-rotate"></i></button>
+          <br><br>
 
         <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px; font-size:10px" id="handle">
             Rotation
           </div>
 
-        <label for="customRange2">X</label>
-        <div class="input-group mb-3">
-          <span @click="rotatex = rotatex - 1; selectedPiece.rotation.x = rotatex * 0.0175" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">-</button></span>
-          <input type="tel" @input="selectedPiece.rotation.x = rotatex * 0.0175" v-model="rotatex" style="text-align: center; padding-right: 0; padding-left: 0" class="form-control" >
-          <span @click="rotatex = rotatex + 1; selectedPiece.rotation.x = rotatex * 0.0175" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">+</button></span>
-        </div>
+        <label for="customRange2">X</label><br>
+          <input type="range" style="width: 90%" class="custom-range" min="0" max="359"  @input="selectedPiece.rotation.x = rotatex * 0.0175" v-model="rotatex"  >
 
-        <label for="customRange2">Y</label>
-        <div class="input-group mb-3">
-          <span @click="rotatey = rotatey - 1; selectedPiece.rotation.y = rotatey * 0.0175" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">-</button></span>
-          <input @input="rotatey = rotatey - 1; selectedPiece.rotation.y = rotatey * 0.0175" type="tel" v-model="rotatey" style="text-align: center; padding-right: 0; padding-left: 0" class="form-control" >
-          <span @click="rotatey = rotatey + 1; selectedPiece.rotation.y = rotatey * 0.0175" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">+</button></span>
-        </div>
+        <br><label for="customRange2">Y</label><br>
+          <input type="range" style="width: 90%" class="custom-range" min="0" max="359" @input="selectedPiece.rotation.y = rotatey * 0.0175" v-model="rotatey"  >
 
-        <label for="customRange2">Z</label>
-        <div class="input-group mb-3">
-          <span @click="rotatez = rotatez - 1; selectedPiece.rotation.z = rotatez * 0.0175" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">-</button></span>
-          <input @input="rotatez = rotatez - 1; selectedPiece.rotation.z = rotatez * 0.0175" type="tel" v-model="rotatez" style="text-align: center; padding-right: 0; padding-left: 0" class="form-control" >
-          <span @click="rotatez = rotatez + 1; selectedPiece.rotation.z = rotatez * 0.0175" class="input-group-text" style="cursor: pointer" id="basic-addon1"><button class="btn btn-light" style="padding: 0; color: black">+</button></span>
-        </div>
+        <br><label for="customRange2">Z</label><br>
+          <input type="range" style="width: 90%" class="custom-range" min="0" max="359" @input="selectedPiece.rotation.z = rotatez * 0.0175" v-model="rotatez"  ><br>
+          <button class="btn btn-primary" @click="resetrotitem(selectedPiece)"><i class="fa-solid fa-rotate"></i></button>
+          <br><br>
       </div>
       <div v-else style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
         <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px;" id="handle">
@@ -405,7 +431,7 @@ export default {
     scene: "",
     selectedPiece: "",
     rightsleft: 0,
-    homepicture: "/Untitled-design-35.jpg",
+    homepicture: "/house.jpg",
     lights: [],
     size : 1,
     topstop: '0px',
@@ -467,20 +493,32 @@ export default {
     this.checkrotate();
   },
   methods: {
+    deleteall() {
+      var i = 0
+      for (var item in this.groups) {
+        this.scene.remove(this.transform)
+        this.scene.remove(this.groups[i])
+        i++
+      }
+      this.groups = []
+
+
+    },
     capture() {
       this.menub = false
       this.menus = false
       this.scene.remove(this.transform)
       
-      document.querySelector("#elem").style.width = '3264px'
-      document.querySelector("#elem").style.height = '2448px'
-      document.querySelector("canvas").style.width = '3264px'
-      document.querySelector("canvas").style.height = '2448px'
+      document.querySelector("#elem").style.width = '960px'
+      document.querySelector("#elem").style.height = '540px'
+      document.querySelector("canvas").style.width = '960px'
+      document.querySelector("canvas").style.height = '540px'
       setTimeout(() => {
         
         html2canvas(document.querySelector("#elem"), {
           useCORS: true,
-          allowTaint: true
+          allowTaint: true,
+          scale: 2,
         }).then(canvas => {
           var a = document.createElement('a');
           // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
@@ -559,6 +597,25 @@ export default {
       this.groups[id].position.set(0, 0, 0)
       this.groups[id].scale.set(1, 1, 1)
       this.size = 1
+      this.axisx= 0
+      this.axisy= 0
+      this.axisz= 0
+      this.rotatex= 0
+      this.rotatey= 0
+      this.rotatez= 0
+    },
+    resetdimitem(id) {
+      id.position.set(0, 0, 0)
+      this.axisx= 0
+      this.axisy= 0
+      this.axisz= 0
+
+    },
+    resetrotitem(id) {
+      id.rotation.set(0, 0, 0)
+      this.rotatex= 0
+      this.rotatey= 0
+      this.rotatez= 0
     },
     deleteitem(id) {
       this.scene.remove(this.transform);
@@ -650,7 +707,7 @@ export default {
       light.shadowMapWidth = 1024;
       light.shadowMapHeight = 1024;
 
-      var d = 10000;
+      var d = 5000;
 
       light.shadowCameraLeft = -d;
       light.shadowCameraRight = d;
@@ -658,7 +715,7 @@ export default {
       light.shadowCameraBottom = -d;
       light.shadow.bias = -0.08;
 
-      light.shadowCameraFar = 10000;
+      light.shadowCameraFar = 5000;
       light.shadowDarkness = 0.8;
       this.groups.push(light);
       this.obj.push(light);
@@ -680,6 +737,28 @@ export default {
       var mainlight = new THREE.AmbientLight(0xffffff, 0.7)
       scene.add(mainlight);
 
+      var light = new THREE.DirectionalLight(0xffffff, 0);
+      light.position.set(0, 400, 0)
+      light.position.multiplyScalar(1.3);
+
+      light.castShadow = true;
+      light.shadowCameraVisible = false;
+
+      light.shadowMapWidth = 1024;
+      light.shadowMapHeight = 1024;
+
+      var d = 5000;
+
+      light.shadowCameraLeft = -d;
+      light.shadowCameraRight = d;
+      light.shadowCameraTop = d;
+      light.shadowCameraBottom = -d;
+      light.shadow.bias = -0.08;
+
+      light.shadowCameraFar = 5000;
+      light.shadowDarkness = 0.4;
+      scene.add(light);
+
       const geometry = new THREE.PlaneGeometry( 1000000, 1000000 );
       geometry.rotateX( - Math.PI / 2 );
 
@@ -694,8 +773,9 @@ export default {
 
 
       const camera = new THREE.PerspectiveCamera(60, winw / winh, 1, 1000000);
-      camera.position.set(3000, 800, 4000, 1000);
-      camera.lookAt(-1000, 500, 0);
+      camera.position.set(6000, 400, 4000, 1000);
+      camera.lookAt(0, -2000, 0);
+      camera.aspect = 1920 / 1080;
       
 
       const renderer = new THREE.WebGLRenderer({
@@ -703,12 +783,14 @@ export default {
         alpha: true,
         antialias: true,
         SSAO: true,
+        precision: 'highp'
       });
       renderer.shadowMapEnabled = true;
       renderer.shadowMapSoft = true;
       renderer.shadowMap.enabled = true;
+      renderer.setPixelRatio( window.devicePixelRatio );
       // renderer.setClearColor(0xFEFEFE);
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(1920, 1080);
       document.querySelector("#container").appendChild(renderer.domElement);
 
       this.transform = new TransformControls(camera, renderer.domElement);
@@ -717,15 +799,15 @@ export default {
       this.transform.enableZoom = true;
 
       $('#elem').bind('resize', function () {
-        camera.aspect = window.innerWidth / winh;
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = 1920 / 1080;
+        renderer.setSize(1920, 1080);
         render();
       })
 
       window.addEventListener("resize", onWindowResize, false);
       function onWindowResize() {
-        camera.aspect = window.innerWidth / winh;
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = 1920 / 1080;
+        renderer.setSize(1920, 1080);
         render();
       }
 
