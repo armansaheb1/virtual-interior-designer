@@ -124,8 +124,10 @@
         >
         <img style="width: 90%; margin-top: -3px" src="/full-screen.png">
         </button>
-        <button
-          @click="capture()"
+        
+        <div class="dropdown">
+          <button
+          @click="qual = !qual"
           style="
             float: right;
             cursor: pointer;
@@ -139,6 +141,12 @@
         >
         <img style="width: 93%; margin-top: -3px" src="/export.png">
         </button>
+          <div v-if="qual" class="dropdown-menu" style="top: 50px; left: 250px; display: unset" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
         <button
         @click="deselect()"
           style="
@@ -423,6 +431,7 @@ export default {
     loaderitems: "",
     itemparts: [],
     color: [],
+    qual: false,
     rotate: false,
     paint: false,
     mod: "",
@@ -504,21 +513,21 @@ export default {
 
 
     },
-    capture() {
+    capture(w, h) {
       this.menub = false
       this.menus = false
       this.scene.remove(this.transform)
       
-      document.querySelector("#elem").style.width = '960px'
-      document.querySelector("#elem").style.height = '540px'
-      document.querySelector("canvas").style.width = '960px'
-      document.querySelector("canvas").style.height = '540px'
+      document.querySelector("#elem").style.width = `${w}px`
+      document.querySelector("#elem").style.height = `${h}px`
+      document.querySelector("canvas").style.width = `${w}px`
+      document.querySelector("canvas").style.height = `${h}px`
       setTimeout(() => {
         
         html2canvas(document.querySelector("#elem"), {
           useCORS: true,
           allowTaint: true,
-          scale: 2,
+          scale: 1,
         }).then(canvas => {
           var a = document.createElement('a');
           // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
@@ -773,8 +782,8 @@ export default {
 
 
       const camera = new THREE.PerspectiveCamera(60, winw / winh, 1, 1000000);
-      camera.position.set(6000, 400, 4000, 1000);
-      camera.lookAt(0, -2000, 0);
+      camera.position.set(1500, 400, 3000, 1000);
+      camera.lookAt(-1000, 500, 0);
       camera.aspect = 1920 / 1080;
       
 
@@ -790,8 +799,10 @@ export default {
       renderer.shadowMap.enabled = true;
       renderer.setPixelRatio( window.devicePixelRatio );
       // renderer.setClearColor(0xFEFEFE);
-      renderer.setSize(1920, 1080);
+      renderer.setSize(3840, 2160);
       document.querySelector("#container").appendChild(renderer.domElement);
+      document.querySelector("canvas").style.width = '100%'
+      document.querySelector("canvas").style.height = '100%'
 
       this.transform = new TransformControls(camera, renderer.domElement);
       this.transform.dragging = false
@@ -799,15 +810,15 @@ export default {
       this.transform.enableZoom = true;
 
       $('#elem').bind('resize', function () {
-        camera.aspect = 1920 / 1080;
-        renderer.setSize(1920, 1080);
+        camera.aspect = 3840 / 2160;
+        renderer.setSize(3840, 2160);
         render();
       })
 
       window.addEventListener("resize", onWindowResize, false);
       function onWindowResize() {
-        camera.aspect = 1920 / 1080;
-        renderer.setSize(1920, 1080);
+        camera.aspect = 3840 / 2160;
+        renderer.setSize(3840, 2160);
         render();
       }
 
