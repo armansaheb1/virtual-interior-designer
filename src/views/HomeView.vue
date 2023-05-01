@@ -142,9 +142,9 @@
         <img style="width: 93%; margin-top: -3px" src="/export.png">
         </button>
           <div v-if="qual" class="dropdown-menu" style="top: 50px; left: 250px; display: unset" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <a @click="capture(1920, 1080)" class="dropdown-item" href="#">(1920, 1080)</a>
+            <a @click="capture(1366, 768)" class="dropdown-item" href="#">(1366, 768)</a>
+            <a @click="capture(1024, 768)" class="dropdown-item" href="#">(1024, 768)</a>
           </div>
         </div>
         <button
@@ -215,7 +215,7 @@
           </div>
         </div>
       </div>
-      <div v-if="selectedPiece.name !== 'light'" style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
+      <div v-if="selectedPiece.name !== 'light' && selectedPiece.name !== 'shadowlight'" style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
 
         <label for="customRange2">Size</label>
         <input v-model="size" @input="selectedPiece.scale.set(size, size, size);" type="range" class="custom-range" min="0.2" max="1.8" step="0.01" style="width: 80%" id="customRange2">
@@ -251,6 +251,10 @@
           <button class="btn btn-primary" @click="resetrotitem(selectedPiece)"><i class="fa-solid fa-rotate"></i></button>
           <br><br>
       </div>
+      <div v-else-if="selectedPiece.name === 'shadowlight'" style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
+        
+      </div>
+      
       <div v-else style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
         <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px;" id="handle">
             Dimension
@@ -259,7 +263,6 @@
         <input v-model="intensity" @input="selectedPiece.intensity=intensity" type="range" class="custom-range" min="0" max="4" step="0.01" style="width: 80%" id="customRange2">
         <label hidden for="customRange2">Color</label>
         <input hidden v-model="color" @input="selectedPiece.color=color.replace('#', '')" type="color" class="custom-range" >
-        {{ selectedPiece.color }}
       </div>
     </div>
     <div
@@ -344,7 +347,6 @@
         
           <div
             class="sublights"
-            @click="lightadd()"
             style="
               position: absolute;
               width: 150%;
@@ -358,9 +360,14 @@
               cursor: pointer;
             "
             >
-            <h3>
+            <h3 @click="lightadd()">
             <i class="fa-solid fa-lightbulb"></i>
             <p class="pc">Directional</p>
+          </h3>
+
+            <h3 @click="shadowlightadd()">
+            <i class="fa-solid fa-lightbulb"></i>
+            <p class="pc">Shadow Light</p>
           </h3>
         </div>
         </div>
@@ -427,6 +434,7 @@ export default {
     rotatex: 0,
     rotatey: 0,
     rotatez: 0,
+    shadowDarkness: 0.5,
     item: "",
     loaderitems: "",
     itemparts: [],
@@ -710,7 +718,7 @@ export default {
       light.position.set(20, 400, 200)
       light.position.multiplyScalar(1.3);
 
-      light.castShadow = true;
+      light.castShadow = false;
       light.shadowCameraVisible = false;
 
       light.shadowMapWidth = 1024;
@@ -730,6 +738,36 @@ export default {
       this.obj.push(light);
       light.name = "light";
       light["get_pic"] = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdb9AruWJzoGgT_RZkcBVM62bAeUft3ys2Rw&usqp=CAU';
+      this.scene.add(light);
+      this.transform.attach(light);
+      this.scene.add(this.transform);
+      this.selectedPiece = light
+    },
+    shadowlightadd() {
+      var light = new THREE.DirectionalLight(0x999999, 0.01);
+      light.position.set(20, 400, 200)
+      light.position.multiplyScalar(1.3);
+
+      light.castShadow = true;
+      light.shadowCameraVisible = false;
+
+      light.shadowMapWidth = 1024;
+      light.shadowMapHeight = 1024;
+
+      var d = 5000;
+
+      light.shadowCameraLeft = -d;
+      light.shadowCameraRight = d;
+      light.shadowCameraTop = d;
+      light.shadowCameraBottom = -d;
+      light.shadow.bias = -0.08;
+
+      light.shadowCameraFar = 5000;
+      light.shadowDarkness = 0.8;
+      this.groups.push(light);
+      this.obj.push(light);
+      light.name = "shadowlight";
+      light["get_pic"] = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiHgr13Csi24ym1dBqOTAba8GSlakOFFwYNueT7tIclZHlDOSK8EQSJIpkplwsZnXg60c&usqp=CAU';
       this.scene.add(light);
       this.transform.attach(light);
       this.scene.add(this.transform);
