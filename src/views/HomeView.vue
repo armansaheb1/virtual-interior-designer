@@ -1,403 +1,443 @@
 <template>
-  <div id="elem" @mousemove="myFunction()" style="background: black; width: 100%; height: 100%; overflow: hidden ; position: absolute">
-    <div
-      v-if="!homepicture"
-      style="
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: white;
-        top: 0;
-        left: 0;
-        z-index: 100000000000000000000000000000000000000000000000000000;
-      "
-    >
-      <h4 style="margin-top: 10%">Please Select a Picture</h4>
-      <br />
-      <input id="file" @input="sendpic()" type="file" />
-    </div>
-    <div
-      v-if="false"
-      style="
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: white;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-      "
-    >
-      <button @click="homepicture = '/Untitled-design-35.jpg'">Close</button>
-      <h4 style="margin-top: 10%">Please Select a Picture</h4>
-      <br />
-      <input id="file" @input="sendpic" type="file" />
-    </div>
-    <div
-      class="homepic"
-      :style="`position:absolute ;width: 100% ;height: 100%; background: url(${homepicture}); background-size: 100% 100%; right: 0%;left:0%; top : 0`"
-    >
-    <div
-        id="container"
-        style="height: 100%; float: left; mrgin-top: 0px; width: 100% ; position: absolute; top: 0"
-      ></div>
-    <button
-          v-if="menub && !menus"
-          @click="menus = !menus"
-          style="
-            float: left;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-            position: absolute;
-            top:10px;
-            left: 10px;
-            z-index:1000000000000000000000000000000000000000000000
-          "
-        >
-        <img style="width: 90%; margin: 2.5%" src="/full-screen.png">
-      </button>
-      <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px; width: 315px; left: 37%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 1000000000`">
-        <button
-          @click="rotate = true"
-          style="
-            float: left;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-          "
-        >
-        <img @click="homepicture = false" style="width: 90%; margin-top: -3px" src="/new image.png">
-        </button>
-        <button
-          v-if="!rotate"
-          @click="rotate = true"
-          style="
-            float: left;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-          "
-        >
-        <img style="width: 90%; margin-top: -3px" src="/rotate.png">
-        </button>
-        <button
-          v-if="rotate"
-          @click="rotate = false"
-          style="
-            float: left;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-          "
-        >
-        <img style="width: 90%; margin-top: -3px" src="/move.png">
-        </button>
-        <button
-          @click="menus = !menus"
-          style="
-            float: left;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-          "
-        >
-        <img style="width: 90%; margin-top: -3px" src="/full-screen.png">
-        </button>
+  <div>
+    <div class="rendloading" v-if="rendloading" style="z-index: 100000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(255, 255, 255, 1);text-align: center">
+      <div v-if="rendll" class="spinner-border" role="status" style="margin-top: 20%">
+        <span class="sr-only">Loading...</span>
         
-        <div class="dropdown">
-          <button
-          @click="qual = !qual"
-          style="
-            float: right;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-          "
-        >
-        <img style="width: 93%; margin-top: -3px" src="/export.png">
-        </button>
-          <div v-if="qual" class="dropdown-menu" style="top: 50px; left: 250px; display: unset" aria-labelledby="dropdownMenuButton">
-            <a @click="capture(1920, 1080)" class="dropdown-item" href="#">(1920, 1080)</a>
-            <a @click="capture(1366, 768)" class="dropdown-item" href="#">(1366, 768)</a>
-            <a @click="capture(1024, 768)" class="dropdown-item" href="#">(1024, 768)</a>
+      </div>
+      <h3 v-if="rendll">Rendering...</h3>
+    </div>
+    <div id="elem" @mousemove="myFunction()" style="background: black; width: 100%; height: 100%; overflow: hidden ; position: absolute">
+      
+      <div v-if="rendmo" style="z-index: 1000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(0, 0, 0, 0.7);">
+        <div class="card" style="width: 50%; margin: auto; margin-top: 8%; background: white;border-radius: 20px;">
+          <div class="card-header">
+            Render Settings
+            <button @click="rendmo = !rendmo" class="btn btn-dark" style="float:right; border-radius:50%">X</button>
+          </div>
+          <div class="card-body">
+            <form style="text-align: left" @submit.prevent="capture(rendratio)">
+              <label for="" >Ratio</label>
+              <select class="form-control" v-model="rendratio" required>
+                <option selected :value="[1920, 1080]">
+                  1920, 1080
+                </option>
+                <option :value="[1366, 768]">
+                  1366, 768
+                </option>
+                <option :value="[1024, 768]">
+                  1024, 768
+                </option>
+              </select>
+              <br>
+              <label for="">Watermark</label>
+              <select class="form-control" v-model="watermark" required>
+                <option value="false">
+                  Off
+                </option>
+                <option value="true">
+                  On
+                </option>
+              </select>
+              <br><br>
+              <button class="btn-dark form-control" style="background: black; color: white ">
+                Start Rendering
+              </button>
+            </form>
           </div>
         </div>
-        <button
-        @click="deselect()"
-          style="
-            float: right;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-          "
-        >
-        <img style="width: 90%; margin-top: -3px" src="/select-none.png">
-        </button>
-        <button
-        @click="deleteall()"
-          style="
-            float: right;
-            cursor: pointer;
-            margin: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: none;
-            outline: none;
-          "
-        >
-        <img style="width: 92%; margin-top: -3px" src="/delete-all.png">
-        </button>
-        <button v-if="topstop == '0px'" @click="topstop = '-45px'" style="position: absolute; bottom: -10px;left: 45%; border: none; background-color: white;border-radius: 10px;">
-          <i style="cursor: pointer" class="fa-solid fa-chevron-up"></i>
-        </button>
-        <button v-if="topstop == '-45px'" @click="topstop = '0px'" style="position: absolute; bottom: -10px;left: 45%; border: none; background-color: white;border-radius: 10px;">
-          <i style="cursor: pointer" class="fa-solid fa-chevron-down"></i>
-        </button>
       </div>
-    </div>
-    <div
-      v-if="groups.length && menus"
-      :style="`
-        position: absolute;
-        width: 10%;
-        background: white;
-        height: 100%;
-        background-size: 100% 100%;
-        right: -${rightsleft}%;
-        top: 0;
-        color: white;
-        text-align: center
-        `
-      "
-      class="menus"
+      <div
+        v-if="!homepicture"
+        style="
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: white;
+          top: 0;
+          left: 0;
+          z-index: 100000000000000000000000000000000000000000000000000000;
+        "
       >
-      <div style="height: 51%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px">
-        <div
-          v-for="(item, idx) in groups"
-          v-bind:key="item"
-          @click="selectbar(idx)"
+        <h4 style="margin-top: 10%">Please Select a Picture</h4>
+        <br />
+        <input id="file" @input="sendpic()" type="file" />
+      </div>
+      <div
+        v-if="false"
+        style="
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: white;
+          top: 0;
+          left: 0;
+          z-index: 1000;
+        "
+      >
+        <button @click="homepicture = '/Untitled-design-35.jpg'">Close</button>
+        <h4 style="margin-top: 10%">Please Select a Picture</h4>
+        <br />
+        <input id="file" @input="sendpic" type="file" />
+      </div>
+      <div
+        class="homepic"
+        :style="`position:absolute ;width: 100% ;height: 100%; background: url(${homepicture}); background-size: 100% 100%; right: 0%;left:0%; top : 0`"
+      >
+      <div
+          id="container"
+          style="height: 100%; float: left; mrgin-top: 0px; width: 100% ; position: absolute; top: 0"
+        ></div>
+      <button
+            v-if="menub && !menus"
+            @click="menus = !menus"
+            style="
+              float: left;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+              position: absolute;
+              top:10px;
+              left: 10px;
+              z-index:1000000000000000000000000000000000000000000000
+            "
           >
-          <div v-if="item">
-            <img v-if="item == selectedPiece" :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid cornflowerblue 2px; cursor: pointer" alt="">
-            <img v-else :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid #ececec 2px; cursor: pointer" alt="">
-            <button class="btn btn-danger" @click="deleteitem(idx)" style="position: relative; top: -25px ; left: -5px"><i class="fa-solid fa-trash"></i></button>
-            <button class="btn btn-primary" @click="resetitem(idx)" style="position: relative; top: -25px ; left: 5px"><i class="fa-solid fa-rotate"></i></button>
+          <img style="width: 90%; margin: 2.5%" src="/full-screen.png">
+        </button>
+        <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px; width: 315px; left: 37%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 1000000000`">
+          <button
+            @click="rotate = true"
+            style="
+              float: left;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img @click="homepicture = false" style="width: 90%; margin-top: -3px" src="/new image.png">
+          </button>
+          <button
+            v-if="!rotate"
+            @click="rotate = true"
+            style="
+              float: left;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img style="width: 90%; margin-top: -3px" src="/rotate.png">
+          </button>
+          <button
+            v-if="rotate"
+            @click="rotate = false"
+            style="
+              float: left;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img style="width: 90%; margin-top: -3px" src="/move.png">
+          </button>
+          <button
+            @click="menus = !menus"
+            style="
+              float: left;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img style="width: 90%; margin-top: -3px" src="/full-screen.png">
+          </button>
+          
+          <div class="dropdown">
+            <button
+            @click="rendmo = !rendmo"
+            style="
+              float: right;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img style="width: 93%; margin-top: -3px" src="/export.png">
+          </button>
           </div>
+          <button
+          @click="deselect()"
+            style="
+              float: right;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img style="width: 90%; margin-top: -3px" src="/select-none.png">
+          </button>
+          <button
+          @click="deleteall()"
+            style="
+              float: right;
+              cursor: pointer;
+              margin: 10px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img style="width: 92%; margin-top: -3px" src="/delete-all.png">
+          </button>
+          <button v-if="topstop == '0px'" @click="topstop = '-45px'" style="position: absolute; bottom: -10px;left: 45%; border: none; background-color: white;border-radius: 10px;">
+            <i style="cursor: pointer" class="fa-solid fa-chevron-up"></i>
+          </button>
+          <button v-if="topstop == '-45px'" @click="topstop = '0px'" style="position: absolute; bottom: -10px;left: 45%; border: none; background-color: white;border-radius: 10px;">
+            <i style="cursor: pointer" class="fa-solid fa-chevron-down"></i>
+          </button>
         </div>
       </div>
-      <div v-if="selectedPiece.name !== 'light' && selectedPiece.name !== 'shadowlight'" style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
-
-        <label for="customRange2">Size</label>
-        <input v-model="size" @input="selectedPiece.scale.set(size, size, size);" type="range" class="custom-range" min="0.2" max="1.8" step="0.01" style="width: 80%" id="customRange2">
-
-        <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px; font-size:10px" id="handle">
-            Dimension
+      <div
+        v-if="groups.length && menus"
+        :style="`
+          position: absolute;
+          width: 10%;
+          background: white;
+          height: 100%;
+          background-size: 100% 100%;
+          right: -${rightsleft}%;
+          top: 0;
+          color: white;
+          text-align: center
+          `
+        "
+        class="menus"
+        >
+        <div style="height: 51%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px">
+          <div
+            v-for="(item, idx) in groups"
+            v-bind:key="item"
+            @click="selectbar(idx)"
+            >
+            <div v-if="item">
+              <img v-if="item == selectedPiece" :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid cornflowerblue 2px; cursor: pointer" alt="">
+              <img v-else :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid #ececec 2px; cursor: pointer" alt="">
+              <button class="btn btn-danger" @click="deleteitem(idx)" style="position: relative; top: -25px ; left: -5px"><i class="fa-solid fa-trash"></i></button>
+              <button class="btn btn-primary" @click="resetitem(idx)" style="position: relative; top: -25px ; left: 5px"><i class="fa-solid fa-rotate"></i></button>
+            </div>
           </div>
+        </div>
+        <div v-if="selectedPiece" style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
+          <div v-if="selectedPiece.name !== 'light' && selectedPiece.name !== 'shadowlight'">
+            <label for="customRange2">Size</label>
+            <input v-model="size" @input="selectedPiece.scale.set(size, size, size);" type="range" class="custom-range" min="0.2" max="1.8" step="0.01" style="width: 80%" id="customRange2">
 
-        <label for="customRange2">X</label><br>
-          <input type="range" style="width: 90%" min="-450" max="100" class="custom-range" @input="selectedPiece.position.setX(axisx * 30)" v-model="axisx"  >
+            <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px; font-size:10px" id="handle">
+                Dimension
+              </div>
 
-        <br><label for="customRange2">Y</label><br>
-          <input type="range" style="width: 90%" min="-50" max="130" class="custom-range" @input="selectedPiece.position.setY(axisy * 30)" v-model="axisy"  >
+            <label for="customRange2">X</label><br>
+              <input type="range" style="width: 90%" min="-450" max="100" class="custom-range" @input="selectedPiece.position.setX(axisx * 30)" v-model="axisx"  >
 
-        <br><label for="customRange2">Z</label><br>
-          <input type="range" style="width: 90%" min="-450" max="100" class="custom-range" @input="selectedPiece.position.setZ(axisz * 30)" v-model="axisz"  >
-          <br>
-          <button class="btn btn-primary" @click="resetdimitem(selectedPiece)" ><i class="fa-solid fa-rotate"></i></button>
-          <br><br>
+            <br><label for="customRange2">Y</label><br>
+              <input type="range" style="width: 90%" min="-50" max="130" class="custom-range" @input="selectedPiece.position.setY(axisy * 30)" v-model="axisy"  >
 
-        <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px; font-size:10px" id="handle">
-            Rotation
+            <br><label for="customRange2">Z</label><br>
+              <input type="range" style="width: 90%" min="-450" max="100" class="custom-range" @input="selectedPiece.position.setZ(axisz * 30)" v-model="axisz"  >
+              <br>
+              <button class="btn btn-primary" @click="resetdimitem(selectedPiece)" ><i class="fa-solid fa-rotate"></i></button>
+              <br><br>
+
+            <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px; font-size:10px" id="handle">
+                Rotation
+              </div>
+
+            <label for="customRange2">X</label><br>
+              <input type="range" style="width: 90%" class="custom-range" min="0" max="359"  @input="selectedPiece.rotation.x = rotatex * 0.0175" v-model="rotatex"  >
+
+            <br><label for="customRange2">Y</label><br>
+              <input type="range" style="width: 90%" class="custom-range" min="0" max="359" @input="selectedPiece.rotation.y = rotatey * 0.0175" v-model="rotatey"  >
+
+            <br><label for="customRange2">Z</label><br>
+              <input type="range" style="width: 90%" class="custom-range" min="0" max="359" @input="selectedPiece.rotation.z = rotatez * 0.0175" v-model="rotatez"  ><br>
+              <button class="btn btn-primary" @click="resetrotitem(selectedPiece)"><i class="fa-solid fa-rotate"></i></button>
+              <br><br>
           </div>
-
-        <label for="customRange2">X</label><br>
-          <input type="range" style="width: 90%" class="custom-range" min="0" max="359"  @input="selectedPiece.rotation.x = rotatex * 0.0175" v-model="rotatex"  >
-
-        <br><label for="customRange2">Y</label><br>
-          <input type="range" style="width: 90%" class="custom-range" min="0" max="359" @input="selectedPiece.rotation.y = rotatey * 0.0175" v-model="rotatey"  >
-
-        <br><label for="customRange2">Z</label><br>
-          <input type="range" style="width: 90%" class="custom-range" min="0" max="359" @input="selectedPiece.rotation.z = rotatez * 0.0175" v-model="rotatez"  ><br>
-          <button class="btn btn-primary" @click="resetrotitem(selectedPiece)"><i class="fa-solid fa-rotate"></i></button>
-          <br><br>
-      </div>
-      <div v-else-if="selectedPiece.name === 'shadowlight'" style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
+        </div>
         
+        <div v-else style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
+          <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px;" id="handle">
+              Dimension
+            </div>
+          <label for="customRange2">Intensity</label>
+          <input v-model="intensity" @input="selectedPiece.intensity=intensity" type="range" class="custom-range" min="0" max="4" step="0.01" style="width: 80%" id="customRange2">
+          <label hidden for="customRange2">Color</label>
+          <input hidden v-model="color" @input="selectedPiece.color=color.replace('#', '')" type="color" class="custom-range" >
+        </div>
+      </div>
+      <div
+        v-if="menus"
+        class="objects menus"
+        style="
+          position: absolute;
+          width: 10%;
+          background: white;
+          height: 100%;
+          background-size: 100% 100%;
+          left: 0;
+          top: 0;
+          color: white;
+        "
+        >
+        <div  style="height: 25%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; color: #444">
+          <div>
+            <h3 class="object">
+              <i class="fa-solid fa-couch"></i>
+              <p class="pc">Objects</p>
+            </h3>
+          
+            <div
+              class="subobject"
+              style="
+                position: absolute;
+                width: 100%;
+                background: white;
+                height: 100%;
+                background-size: 100% 100%;
+                left: 100%;
+                top: 0;
+                color: white;
+                background: #ececec ;
+              "
+              >
+              <div
+                v-for="(item, idx) in cat"
+                @mouseover="setsub(idx)"
+                v-bind:key="item"
+                style="cursor: pointer; background: #ececec ; back"
+              >
+                <h3>
+                  <i :class="`${item.icon}`"></i>
+                  <p class="pc">{{ item.name }}</p>
+                </h3>
+              
+              </div>
+              <div
+              class="subsubobject"
+              style="
+                position: absolute;
+                width: 80%;
+                background: white;
+                height: 100%;
+                background-size: 100% 100%;
+                left: 100%;
+                top: 0;
+                color: white;
+                background: #ffffff ;
+              "
+              >
+              <div
+                v-for="item in subs"
+                v-bind:key="item"
+                @click="loaditem(item)"
+                style="cursor: pointer; background: #ffffff ; back"
+              >
+                <img :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid #ececec 2px" alt="">
+              
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="lights">
+            <h3>
+              <i class="fa-solid fa-lightbulb"></i>
+              <p class="pc">Lights</p>
+            </h3>
+          
+            <div
+              class="sublights"
+              style="
+                position: absolute;
+                width: 150%;
+                background: #ececec ;
+                height: 100%;
+                background-size: 100% 100%;
+                left: 100%;
+                top: 0;
+                color: #ececec;
+                z-index: 1000000000000;
+                cursor: pointer;
+              "
+              >
+              <h3 @click="lightadd()">
+              <i class="fa-solid fa-lightbulb"></i>
+              <p class="pc">Directional</p>
+            </h3>
+
+              <h3 @click="shadowlightadd()">
+              <i class="fa-solid fa-lightbulb"></i>
+              <p class="pc">Shadow Light</p>
+            </h3>
+          </div>
+          </div>
+        </div>
+        <div v-if="selectedPiece" style="height: 75%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444; font-size: 12px;">
+          <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px;border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px;" id="handle">
+              Appearance
+            </div>
+            <div style="height: 86%; overflow-y: auto; padding: 5px">
+              <div v-for="(item, idx) in selectedPiece.children" style="height: auto;" v-bind:key="item">
+                <div style="width: 90%; margin: auto">
+                  <a>{{item.name}}</a><br>
+                  <select v-if="spd[idx]" v-model="color[idx]" @change="changecolor(idx)" style="border-color: grey; border-radius: 5px; padding: 2px; font-family:'UR'; width: 100%">
+                    <option disabled selected>
+                      Select Material
+                    </option>
+                    <option v-for="itemm in spd[idx].bump[0].colors" :value="itemm">
+                      {{ itemm.name }}
+                    </option>
+                  </select>
+                  <hr style="margin :2px">
+                </div>
+              </div>          
+            </div>
+            <br>
+
+        </div>
+          
       </div>
       
-      <div v-else style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
-        <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px;" id="handle">
-            Dimension
-          </div>
-        <label for="customRange2">Intensity</label>
-        <input v-model="intensity" @input="selectedPiece.intensity=intensity" type="range" class="custom-range" min="0" max="4" step="0.01" style="width: 80%" id="customRange2">
-        <label hidden for="customRange2">Color</label>
-        <input hidden v-model="color" @input="selectedPiece.color=color.replace('#', '')" type="color" class="custom-range" >
-      </div>
     </div>
-    <div
-      v-if="menus"
-      class="objects menus"
-      style="
-        position: absolute;
-        width: 10%;
-        background: white;
-        height: 100%;
-        background-size: 100% 100%;
-        left: 0;
-        top: 0;
-        color: white;
-      "
-      >
-      <div  style="height: 25%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; color: #444">
-        <div>
-          <h3 class="object">
-            <i class="fa-solid fa-couch"></i>
-            <p class="pc">Objects</p>
-          </h3>
-        
-          <div
-            class="subobject"
-            style="
-              position: absolute;
-              width: 100%;
-              background: white;
-              height: 100%;
-              background-size: 100% 100%;
-              left: 100%;
-              top: 0;
-              color: white;
-              background: #ececec ;
-            "
-            >
-            <div
-              v-for="(item, idx) in cat"
-              @mouseover="setsub(idx)"
-              v-bind:key="item"
-              @click="loaditem(item)"
-              style="cursor: pointer; background: #ececec ; back"
-            >
-              <h3>
-                <i :class="`${item.icon}`"></i>
-                <p class="pc">{{ item.name }}</p>
-              </h3>
-            
-            </div>
-            <div
-            class="subsubobject"
-            style="
-              position: absolute;
-              width: 80%;
-              background: white;
-              height: 100%;
-              background-size: 100% 100%;
-              left: 100%;
-              top: 0;
-              color: white;
-              background: #ffffff ;
-            "
-            >
-            <div
-              v-for="item in subs"
-              v-bind:key="item"
-              @click="loaditem(item)"
-              style="cursor: pointer; background: #ffffff ; back"
-            >
-              <img :src="item.get_pic" style="width: 80%;height: 80%; margin: 10% ; border-radius: 10px; border: solid #ececec 2px" alt="">
-            
-            </div>
-          </div>
-          </div>
-        </div>
-        <div class="lights">
-          <h3>
-            <i class="fa-solid fa-lightbulb"></i>
-            <p class="pc">Lights</p>
-          </h3>
-        
-          <div
-            class="sublights"
-            style="
-              position: absolute;
-              width: 150%;
-              background: #ececec ;
-              height: 100%;
-              background-size: 100% 100%;
-              left: 100%;
-              top: 0;
-              color: #ececec;
-              z-index: 1000000000000;
-              cursor: pointer;
-            "
-            >
-            <h3 @click="lightadd()">
-            <i class="fa-solid fa-lightbulb"></i>
-            <p class="pc">Directional</p>
-          </h3>
-
-            <h3 @click="shadowlightadd()">
-            <i class="fa-solid fa-lightbulb"></i>
-            <p class="pc">Shadow Light</p>
-          </h3>
-        </div>
-        </div>
-      </div>
-      <div v-if="selectedPiece" style="height: 75%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444; font-size: 12px;">
-        <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px;" id="handle">
-            Appearance
-          </div>
-          <div style="height: 86%; overflow-y: auto; padding: 5px">
-            <div v-for="(item, idx) in selectedPiece.children" style="height: auto;" v-bind:key="item">
-              <div style="width: 90%; margin: auto">
-                <a>{{item.name}}</a><br>
-                <select v-if="spd[idx]" v-model="color[idx]" @change="changecolor(idx)" style="border-color: grey; border-radius: 5px; padding: 2px; font-family:'UR'; width: 100%">
-                  <option disabled selected>
-                    Select Material
-                  </option>
-                  <option v-for="itemm in spd[idx].bump[0].colors" :value="itemm">
-                    {{ itemm.name }}
-                  </option>
-                </select>
-                <hr style="margin :2px">
-              </div>
-            </div>          
-          </div>
-          <br>
-
-      </div>
-        
-    </div>
-    
   </div>
 </template>
 
@@ -432,11 +472,16 @@ export default {
     axisy: 0,
     axisz: 0,
     rotatex: 0,
+    rendratio: [1920, 1080],
+    watermark: false,
     rotatey: 0,
     rotatez: 0,
     shadowDarkness: 0.5,
     item: "",
     loaderitems: "",
+    rendmo: false,
+    rendloading: false,
+    rendll: false,
     itemparts: [],
     color: [],
     qual: false,
@@ -445,6 +490,7 @@ export default {
     mod: "",
     obj: [],
     patl: false,
+    intensity: 1,
     scene: "",
     selectedPiece: "",
     rightsleft: 0,
@@ -501,7 +547,10 @@ export default {
     },
     selectedPiece: {
       handler: function () {
-        this.getitemdetails(this.selectedPiece.myid)
+        if(this.selectedPiece && this.selectedPiece.myid){
+          this.getitemdetails(this.selectedPiece.myid)
+        }
+        
       },
       deep: true,
     }
@@ -521,21 +570,32 @@ export default {
 
 
     },
-    capture(w, h) {
+    capture(r) {
+      this.rendloading = true
+      this.rendmo = false
+      
       this.menub = false
       this.menus = false
       this.scene.remove(this.transform)
       
-      document.querySelector("#elem").style.width = `${w}px`
-      document.querySelector("#elem").style.height = `${h}px`
-      document.querySelector("canvas").style.width = `${w}px`
-      document.querySelector("canvas").style.height = `${h}px`
+      document.querySelector("#elem").style.width = `${r[0]}px`
+      document.querySelector("#elem").style.left = `${window.innerWidth}px`
+      document.querySelector("#elem").style.height = `${r[1]}px`
+      document.querySelector("canvas").style.width = `${r[0]}px`
+      document.querySelector("canvas").style.height = `${r[1]}px`
+      setTimeout(() => {
+        document.querySelector('.rendloading').style.width = window.innerWidth
+        document.querySelector('.rendloading').style.height = window.innerHeight
+        this.rendll = true
+      }, 500);
+
       setTimeout(() => {
         
         html2canvas(document.querySelector("#elem"), {
           useCORS: true,
           allowTaint: true,
           scale: 1,
+          dpi: 300
         }).then(canvas => {
           var a = document.createElement('a');
           // toDataURL defaults to png, so we need to request a jpeg, then convert for file download.
@@ -548,10 +608,13 @@ export default {
         document.querySelector("#elem").style.height = '100%'
         document.querySelector("canvas").style.width = '100%'
         document.querySelector("canvas").style.height = '100%'
+        document.querySelector("#elem").style.left = 0
         setTimeout(() => {
           this.menub = true
           this.menus = true
-        }, 2000);
+          this.rendloading = false
+          this.rendll = false
+        }, 4000);
 
         }, 500);
         
@@ -583,10 +646,14 @@ export default {
           );
         var material = new THREE.MeshPhongMaterial({
         map: texture2,
-        shininess: 0,
+        shininess: this.color[id].shininess,
       });
       }
-      this.selectedPiece.children[id].children[0].material= material
+      this.selectedPiece.children[id].traverse(function (node) {
+          if (node.isMesh) {
+            node.material= material
+          }
+        })
     },
     log() {
     },
@@ -669,8 +736,8 @@ export default {
         this.getitemmaterials();
       });
     },
-    async getitemdetails() {
-      await axios.get(`/itemmaterials/${this.item.id}`).then((response) => {
+    async getitemdetails(id) {
+      await axios.get(`/itemmaterials/${id}`).then((response) => {
         this.spd = response.data;
       });
     },
@@ -714,7 +781,7 @@ export default {
       });
     },
     lightadd() {
-      var light = new THREE.DirectionalLight(0xffffff, 2);
+      var light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(20, 400, 200)
       light.position.multiplyScalar(1.3);
 
@@ -784,27 +851,7 @@ export default {
       var mainlight = new THREE.AmbientLight(0xffffff, 0.7)
       scene.add(mainlight);
 
-      var light = new THREE.DirectionalLight(0xffffff, 0);
-      light.position.set(0, 400, 0)
-      light.position.multiplyScalar(1.3);
-
-      light.castShadow = true;
-      light.shadowCameraVisible = false;
-
-      light.shadowMapWidth = 1024;
-      light.shadowMapHeight = 1024;
-
-      var d = 5000;
-
-      light.shadowCameraLeft = -d;
-      light.shadowCameraRight = d;
-      light.shadowCameraTop = d;
-      light.shadowCameraBottom = -d;
-      light.shadow.bias = -0.08;
-
-      light.shadowCameraFar = 5000;
-      light.shadowDarkness = 0.4;
-      scene.add(light);
+      
 
       const geometry = new THREE.PlaneGeometry( 1000000, 1000000 );
       geometry.rotateX( - Math.PI / 2 );
@@ -813,7 +860,7 @@ export default {
       material.opacity = 0.2;
 
       const plane = new THREE.Mesh( geometry, material );
-      plane.position.y = -1001;
+      plane.position.y = -1005;
       plane.receiveShadow = true;
 
       scene.add(plane)
@@ -821,8 +868,8 @@ export default {
 
       const camera = new THREE.PerspectiveCamera(60, winw / winh, 1, 1000000);
       camera.position.set(1500, 400, 3000, 1000);
-      camera.lookAt(-1000, 500, 0);
-      camera.aspect = 1920 / 1080;
+      camera.lookAt(-1000, 500, -5000);
+      camera.aspect = 3840 * 2 / 2160 * 2;
       
 
       const renderer = new THREE.WebGLRenderer({
@@ -847,18 +894,6 @@ export default {
 
       this.transform.enableZoom = true;
 
-      $('#elem').bind('resize', function () {
-        camera.aspect = 3840 / 2160;
-        renderer.setSize(3840, 2160);
-        render();
-      })
-
-      window.addEventListener("resize", onWindowResize, false);
-      function onWindowResize() {
-        camera.aspect = 3840 / 2160;
-        renderer.setSize(3840, 2160);
-        render();
-      }
 
       const stats = Stats();
       function animate() {
@@ -886,10 +921,6 @@ export default {
           color: Number(this.model[this.item.id].parts[i].default.code),
           shininess: this.model[this.item.id].parts[i].default.shininess,
         });
-        if (this.model[this.item.id].parts[i].default.reflect === 1.0) {
-          material.shading = THREE.SmoothShading;
-          material.overdraw = true;
-        }
       } else {
         var bm = null;
         const tloader = new THREE.TextureLoader();
@@ -917,7 +948,11 @@ export default {
       let objLoader = new FBXLoader();
       objLoader.load(this.model[this.item.id].parts[i].model, (object) => {
         object.position.y = -1000;
-        object.children[0].material = material;
+        object.traverse(function (node) {
+          if (node.isMesh) {
+            node.material= material
+          }
+        })
         this.obj.push(object);
         object['name'] = this.model[this.item.id].parts[i].name
         object.traverse(function (node) {
@@ -934,6 +969,7 @@ export default {
       });
     },
     additem() {
+      this.color = []
       this.group = new THREE.Group();
       this.loaderitem(this.model[this.item.id].parts);
       this.group["name"] = this.model[this.item.id].item.name;
@@ -969,35 +1005,12 @@ export default {
       this.scene.add(this.transform);
     },
     selectbar(idx) {
+      this.color = []
       this.selectedPiece = this.groups[idx];
       this.transform.attach(this.groups[idx]);
       this.scene.add(this.transform);
-    },
-    setcolor(counter, code, shininess, repeat, normal, id) {
-      this.final[counter] = id;
-      const material = new THREE.MeshPhongMaterial({
-        color: Number(code),
-        shininess: shininess,
-      });
-      this.obj[counter].children[0].material = material;
-    },
-    setcolor2(counter, code, shininess, repeat, normal, id) {
-      this.final[counter] = id;
-      const texture2 = new THREE.TextureLoader().load(code, (texture) => {
-        texture2.wrapS = THREE.RepeatWrapping;
-        texture2.wrapT = THREE.RepeatWrapping;
-        texture2.repeat.set(repeat, repeat);
-        var material = new THREE.MeshPhongMaterial({
-          map: texture2,
-          shininess: shininess,
-        });
-        for (var itemm of this.obj[counter].children) {
-          for (var itemmm of itemm.children) {
-            itemmm.material = material;
-          }
-          itemm.material = material;
-        }
-      });
+      
+      
     },
   },
 };
@@ -1138,5 +1151,8 @@ h3{
 }
 .custom-range {
     opacity: 30%
+}
+.btn-dark:hover{
+  color: grey!important;
 }
 </style>
