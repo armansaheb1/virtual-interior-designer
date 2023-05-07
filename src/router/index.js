@@ -8,11 +8,6 @@ const routes = [
     name: 'home',
     component: HomeView
   },
-  {
-    path: '/ars/',
-    name: 'home2',
-    component: HomeView2
-  },
 ]
 
 const router = createRouter({
