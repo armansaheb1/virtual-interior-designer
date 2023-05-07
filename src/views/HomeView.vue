@@ -1,5 +1,17 @@
 <template>
   <div>
+    <div v-if="help" style="z-index: 1000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(0, 0, 0, 0.7);">
+        <div class="card" style="width: 50%; margin: auto; margin-top: 8%; background: white;border-radius: 20px;">
+          <div class="card-header">
+            Help
+            <button @click="help = !help" class="btn btn-dark" style="float:right; border-radius:50%">X</button>
+          </div>
+          <div class="card-body" style="text-align: left">
+            <h3>This is help section</h3>
+            <p>This is help section. This is help section. This is help section. This is help section. This is help section. This is help section. This is help section. This is help section. This is help section. This is help section. This is help section. This is help section</p>
+          </div>
+        </div>
+      </div>
     <div class="rendloading" v-if="rendloading" style="z-index: 100000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(255, 255, 255, 1);text-align: center">
       <div v-if="rendll" class="spinner-border" role="status" style="margin-top: 20%">
         <span class="sr-only">Loading...</span>
@@ -7,8 +19,11 @@
       </div>
       <h3 v-if="rendll">Rendering...</h3>
     </div>
-    <div id="elem" @mousemove="myFunction()" style="background: black; width: 100%; height: 100%; overflow: hidden ; position: absolute">
-      
+    
+    <div id="elem" @mousemove="myFunction()" style="background: black; width: 100%; height: 100%; overflow: hidden ; position: absolute; ">
+      <div v-if="water" :style="`width: ${300 * (rendratio[2])}px; ${100 * (rendratio[2])}px ; position: absolute; bottom: ${20 * (rendratio[2] )}px; left: 20px;; z-index: 10000; font-size: ${54 * rendratio[2] }px; padding-top: 5px!important; background: rgba(255, 255, 255, 0.7)`" >
+     VR System
+    </div>
       <div v-if="rendmo" style="z-index: 1000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(0, 0, 0, 0.7);">
         <div class="card" style="width: 50%; margin: auto; margin-top: 8%; background: white;border-radius: 20px;">
           <div class="card-header">
@@ -19,14 +34,14 @@
             <form style="text-align: left" @submit.prevent="capture(rendratio)">
               <label for="" >Ratio</label>
               <select class="form-control" v-model="rendratio" required>
-                <option selected :value="[1920, 1080]">
-                  1920, 1080
+                <option selected :value="[1920, 1080, 5]">
+                  High Quality
                 </option>
-                <option :value="[1366, 768]">
-                  1366, 768
+                <option :value="[1920, 1080, 3]">
+                  Normal Quality
                 </option>
-                <option :value="[1024, 768]">
-                  1024, 768
+                <option :value="[1920, 1080, 1]">
+                  Low Quality
                 </option>
               </select>
               <br>
@@ -88,6 +103,7 @@
           id="container"
           style="height: 100%; float: left; mrgin-top: 0px; width: 100% ; position: absolute; top: 0"
         ></div>
+        
       <button
             v-if="menub && !menus"
             @click="menus = !menus"
@@ -95,6 +111,7 @@
               float: left;
               cursor: pointer;
               margin: 10px;
+              margin-top: 5px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -108,13 +125,13 @@
           >
           <img style="width: 90%; margin: 2.5%" src="/full-screen.png">
         </button>
-        <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px; width: 315px; left: 37%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 1000000000`">
+        <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px;padding-top: 0px; width: 370px; left: 35%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 1000000000`">
           <button
             @click="rotate = true"
             style="
               float: left;
               cursor: pointer;
-              margin: 10px;
+              margin: 9px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -131,6 +148,7 @@
               float: left;
               cursor: pointer;
               margin: 10px;
+              margin-top: 5px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -147,6 +165,7 @@
               float: left;
               cursor: pointer;
               margin: 10px;
+              margin-top: 5px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -162,6 +181,7 @@
               float: left;
               cursor: pointer;
               margin: 10px;
+              margin-top: 5px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -171,6 +191,22 @@
           >
           <img style="width: 90%; margin-top: -3px" src="/full-screen.png">
           </button>
+          <button
+            @click="help = !help"
+            style="
+              float: left;
+              cursor: pointer;
+              margin: 10px;
+              margin-top: 5px;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              border: none;
+              outline: none;
+            "
+          >
+          <img style="width: 90%; margin-top: -3px" src="/help.png">
+          </button>
           
           <div class="dropdown">
             <button
@@ -179,6 +215,7 @@
               float: right;
               cursor: pointer;
               margin: 10px;
+              margin-top: 5px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -195,6 +232,7 @@
               float: right;
               cursor: pointer;
               margin: 10px;
+              margin-top: 5px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -210,6 +248,7 @@
               float: right;
               cursor: pointer;
               margin: 10px;
+              margin-top: 5px;
               width: 32px;
               height: 32px;
               border-radius: 50%;
@@ -417,16 +456,18 @@
             </div>
             <div style="height: 86%; overflow-y: auto; padding: 5px">
               <div v-for="(item, idx) in selectedPiece.children" style="height: auto;" v-bind:key="item">
-                <div style="width: 90%; margin: auto">
+                <div v-if="idx !== 0" style="width: 90%; margin: auto">
                   <a>{{item.name}}</a><br>
-                  <select v-if="spd[idx]" v-model="color[idx]" @change="changecolor(idx)" style="border-color: grey; border-radius: 5px; padding: 2px; font-family:'UR'; width: 100%">
+                  <select v-if="spd[idx - 1]" v-model="color[idx]" @change="changecolor(idx)" style="border-color: grey; border-radius: 5px; padding: 2px; font-family:'UR'; width: 100%">
                     <option disabled selected>
                       Select Material
                     </option>
-                    <option v-for="itemm in spd[idx].bump[0].colors" :value="itemm">
+                    <option v-for="itemm in spd[idx - 1].bump[0].colors" :value="itemm">
                       {{ itemm.name }}
                     </option>
                   </select>
+                  <label for="customRange2">Size</label>
+                  <input v-if="color[idx]" v-model="shininess[idx]" @input="changecolor(idx);" type="range" class="custom-range" min="0" max="1000" step="0.01" style="width: 80%" id="customRange2">
                   <hr style="margin :2px">
                 </div>
               </div>          
@@ -471,6 +512,7 @@ export default {
     axisx: 0,
     axisy: 0,
     axisz: 0,
+    shininess: [],
     rotatex: 0,
     rendratio: [1920, 1080],
     watermark: false,
@@ -513,6 +555,7 @@ export default {
     ii: 0,
     counter: 0,
     parts: [],
+    water: false,
     spd: [],
     transform: "",
     controls2: "",
@@ -523,6 +566,7 @@ export default {
     group: [],
     menus: true,
     menub: true,
+    help: false,
     ph: 0,
     pw: 0,
     cat: [],
@@ -572,17 +616,20 @@ export default {
     },
     capture(r) {
       this.rendloading = true
+      if(this.watermark){
+        this.water = true
+      }
       this.rendmo = false
       
       this.menub = false
       this.menus = false
       this.scene.remove(this.transform)
       
-      document.querySelector("#elem").style.width = `${r[0]}px`
+      document.querySelector("#elem").style.width = `${r[0] * r[2]}px`
       document.querySelector("#elem").style.left = `${window.innerWidth}px`
-      document.querySelector("#elem").style.height = `${r[1]}px`
-      document.querySelector("canvas").style.width = `${r[0]}px`
-      document.querySelector("canvas").style.height = `${r[1]}px`
+      document.querySelector("#elem").style.height = `${r[1] * r[2]}px`
+      document.querySelector("canvas").style.width = `${r[0] * r[2]}px`
+      document.querySelector("canvas").style.height = `${r[1] * r[2]}px`
       setTimeout(() => {
         document.querySelector('.rendloading').style.width = window.innerWidth
         document.querySelector('.rendloading').style.height = window.innerHeight
@@ -614,6 +661,7 @@ export default {
           this.menus = true
           this.rendloading = false
           this.rendll = false
+          this.water = false
         }, 4000);
 
         }, 500);
@@ -627,11 +675,15 @@ export default {
     },
     changecolor(id) {
       console.log(this.color[id].type)
+      var shininess = this.color[id].shininess
+      if (this.shininess) {
+        shininess = this.shininess[id]
+      }
       if (this.color[id].type === 'color') {
         console.log(this.color[id].code)
         var material = new THREE.MeshPhongMaterial({
           color: Number(this.color[id].code),
-          shininess: this.color[id].shininess,
+          shininess: shininess,
         });
       }
       else {
@@ -646,7 +698,7 @@ export default {
           );
         var material = new THREE.MeshPhongMaterial({
         map: texture2,
-        shininess: this.color[id].shininess,
+        shininess: shininess,
       });
       }
       this.selectedPiece.children[id].traverse(function (node) {
@@ -788,8 +840,8 @@ export default {
       light.castShadow = false;
       light.shadowCameraVisible = false;
 
-      light.shadowMapWidth = 1024;
-      light.shadowMapHeight = 1024;
+      light.shadowMapWidth = 4096;
+      light.shadowMapHeight = 4096;
 
       var d = 5000;
 
@@ -818,8 +870,8 @@ export default {
       light.castShadow = true;
       light.shadowCameraVisible = false;
 
-      light.shadowMapWidth = 1024;
-      light.shadowMapHeight = 1024;
+      light.shadowMapWidth = 2048;
+      light.shadowMapHeight = 2048;
 
       var d = 5000;
 
@@ -827,7 +879,7 @@ export default {
       light.shadowCameraRight = d;
       light.shadowCameraTop = d;
       light.shadowCameraBottom = -d;
-      light.shadow.bias = -0.08;
+      light.shadow.bias= -0.002;
 
       light.shadowCameraFar = 5000;
       light.shadowDarkness = 0.8;
@@ -851,19 +903,7 @@ export default {
       var mainlight = new THREE.AmbientLight(0xffffff, 0.7)
       scene.add(mainlight);
 
-      
-
-      const geometry = new THREE.PlaneGeometry( 1000000, 1000000 );
-      geometry.rotateX( - Math.PI / 2 );
-
-      const material = new THREE.ShadowMaterial();
-      material.opacity = 0.2;
-
-      const plane = new THREE.Mesh( geometry, material );
-      plane.position.y = -1005;
-      plane.receiveShadow = true;
-
-      scene.add(plane)
+    
 
 
       const camera = new THREE.PerspectiveCamera(60, winw / winh, 1, 1000000);
@@ -975,6 +1015,17 @@ export default {
       this.group["name"] = this.model[this.item.id].item.name;
       this.group["get_pic"] = this.model[this.item.id].item.get_pic;
       this.group["myid"] = this.model[this.item.id].item.id;
+      const geometry = new THREE.PlaneGeometry( 1000000, 1000000 );
+      geometry.rotateX( - Math.PI / 2 );
+
+      const material = new THREE.ShadowMaterial();
+      material.opacity = 0.5;
+
+      const plane = new THREE.Mesh( geometry, material );
+      plane.position.y = -1000;
+      plane.receiveShadow = true;
+      this.group.add(plane)
+
       
       this.groups.push(this.group);
       
