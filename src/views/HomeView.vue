@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="help" style="z-index: 1000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(0, 0, 0, 0.7);">
+    <div v-if="help" style="z-index: 1000;position : absolute; width: 100%; height: 100% ; background: rgba(0, 0, 0, 0.7);">
         <div class="card" style="width: 50%; margin: auto; margin-top: 8%; background: white;border-radius: 20px;">
           <div class="card-header">
             Help
@@ -12,7 +12,7 @@
           </div>
         </div>
       </div>
-    <div class="rendloading" v-if="rendloading" style="z-index: 100000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(255, 255, 255, 1);text-align: center">
+    <div class="rendloading" v-if="rendloading" style="z-index: 100000;position : absolute; width: 100%; height: 100% ; background: rgba(255, 255, 255, 1);text-align: center">
       <div v-if="rendll" class="spinner-border" role="status" style="margin-top: 20%">
         <span class="sr-only">Loading...</span>
         
@@ -24,7 +24,7 @@
       <div v-if="water" :style="`width: ${300 * (rendratio[2])}px; ${100 * (rendratio[2])}px ; position: absolute; bottom: ${20 * (rendratio[2] )}px; left: 20px;; z-index: 10000; font-size: ${54 * rendratio[2] }px; padding-top: 5px!important; background: rgba(255, 255, 255, 0.7)`" >
      VR System
     </div>
-      <div v-if="rendmo" style="z-index: 1000000000000000000000000000000000000000000000000000000;position : absolute; width: 100%; height: 100% ; background: rgba(0, 0, 0, 0.7);">
+      <div v-if="rendmo" style="z-index: 1000;position : absolute; width: 100%; height: 100% ; background: rgba(0, 0, 0, 0.7);">
         <div class="card" style="width: 50%; margin: auto; margin-top: 8%; background: white;border-radius: 20px;">
           <div class="card-header">
             Render Settings
@@ -71,7 +71,7 @@
           background: white;
           top: 0;
           left: 0;
-          z-index: 100000000000000000000000000000000000000000000000000000;
+          z-index: 100;
         "
       >
         <h4 style="margin-top: 10%">Please Select a Picture</h4>
@@ -120,12 +120,12 @@
               position: absolute;
               top:10px;
               left: 10px;
-              z-index:1000000000000000000000000000000000000000000000
+              z-index:10
             "
           >
           <img style="width: 90%; margin: 2.5%" src="/full-screen.png">
         </button>
-        <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px;padding-top: 0px; width: 370px; left: 35%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 1000000000`">
+        <div v-if="menus" class="topmenu menus" :style="`height: 50px; padding: 1px;padding-top: 0px; width: 370px; left: 35%; position: relative ; background: white;border-radius: 0 0 10px 10px ; top: ${topstop}; z-index: 100`">
           <button
             @click="rotate = true"
             style="
@@ -332,17 +332,15 @@
               <button class="btn btn-primary" @click="resetrotitem(selectedPiece)"><i class="fa-solid fa-rotate"></i></button>
               <br><br>
           </div>
-        </div>
         
-        <div v-else style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
+        <div v-else-if="selectedPiece.name === 'light'" style="height: 49%; overflow: auto; border-bottom: solid 2px #cdcdcd!important; padding-bottom: 5px; padding: 5%; color: #444">
           <div style="width: 100%; margin: auto; border-bottom: solid grey 1.5px;" id="handle">
               Dimension
             </div>
           <label for="customRange2">Intensity</label>
           <input v-model="intensity" @input="selectedPiece.intensity=intensity" type="range" class="custom-range" min="0" max="4" step="0.01" style="width: 80%" id="customRange2">
-          <label hidden for="customRange2">Color</label>
-          <input hidden v-model="color" @input="selectedPiece.color=color.replace('#', '')" type="color" class="custom-range" >
         </div>
+      </div>
       </div>
       <div
         v-if="menus"
@@ -434,7 +432,7 @@
                 left: 100%;
                 top: 0;
                 color: #ececec;
-                z-index: 1000000000000;
+                z-index: 100000;
                 cursor: pointer;
               "
               >
@@ -840,8 +838,8 @@ export default {
       light.castShadow = false;
       light.shadowCameraVisible = false;
 
-      light.shadowMapWidth = 4096;
-      light.shadowMapHeight = 4096;
+      light.shadowMapWidth = 2048;
+      light.shadowMapHeight = 2048;
 
       var d = 5000;
 
