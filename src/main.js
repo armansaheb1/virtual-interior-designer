@@ -2,11 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import axios from 'axios'
-import drag from "v-drag"
+import { IonicVue } from '@ionic/vue';
+import styles from './index.css'
 
-axios.defaults.baseURL = 'http://194.5.195.183/api/v1'
-
-createApp(App).use(store).use(router).use(drag, {
-    // options here
-  }).mount('#app')
+createApp(App).use(store).use(router).use(IonicVue).mount('#app')

@@ -1,12 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import layout1 from '../layouts/layout1.vue'
 
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
+
+const routes = [{
+  // Layout 2
+  path: '/',
+  redirect: '/',
+  component: layout1,
+  children: [
+    {
+      path: '/',
+      component: () => import(/* webpackChunkName: "demo" */ '../components/pages/Index.vue')
+    },
+  ]
+}
 ]
 
 const router = createRouter({

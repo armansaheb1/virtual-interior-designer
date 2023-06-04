@@ -1,4 +1,4 @@
-# amizax
+# interior
 
 ## Project setup
 ```
